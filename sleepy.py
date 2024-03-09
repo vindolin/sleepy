@@ -63,10 +63,9 @@ def main():
     last_mouse_pos = win32api.GetCursorPos()
 
     while True:
-
+        sleepy = True
         data = parse_powercfg()
 
-        sleepy = True
         for key, value in data.items():
             # any of the keys ACTIVELOCKSCREEN, EXECUTION, PERFBOOST, AWAYMODE, DISPLAY, SYSTEM is active
             if key != 'SYSTEM' and len(value) > 0:
@@ -80,9 +79,10 @@ def main():
                             sleepy = False
 
         # if mouse has moved, don't sleep
-        if last_mouse_pos != win32api.GetCursorPos():
+        cursor_pos = win32api.GetCursorPos()
+        if last_mouse_pos != cursor_pos:
             sleepy = False
-            last_mouse_pos = win32api.GetCursorPos()
+            last_mouse_pos = cursor_pos
 
         # detect keyboard presses
         if globals()['key_pressed']:
@@ -94,8 +94,9 @@ def main():
             print('⚙️', end='')
 
         else:  # increment counter
+            if counter > 0:
+                print('💤', end='')
             counter += 1
-            print('💤', end='')
 
         sys.stdout.flush()
 
