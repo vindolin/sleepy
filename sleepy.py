@@ -1,6 +1,5 @@
 
 import subprocess
-import re
 import win32api
 import sys
 import time
@@ -9,57 +8,19 @@ from pynput import keyboard
 
 SLEEP_AFTER_MINUTES = 15  # amount of minutes of inactivity before triggering shutdown
 SLEEP_DELAY_SEC = 5  # check interval
-IGNORE_STRINGS = [  # ignore these strings in SYSTEM section
-    'An audio stream is currently in use',
-    'Legacy Kernel Caller'
-]
 DO_HIBERNATE = False
-
 DEBUG = True  # print status icons while running
 
+KEEP_AWAKE_STRINGS = [
+    'display request',
+    'non-display request'
+]
 
-def parse_powercfg():
-    # parses the output of 'powercfg /requests' and returns a dictionary of the following format:
-    '''
-    {
-        'ACTIVELOCKSCREEN': [],
-        'AWAYMODE': [],
-        'DISPLAY': [],
-        'EXECUTION': [],
-        'PERFBOOST': [],
-        'SYSTEM': [
-            ['[DRIVER] Legacy Kernel Caller'], ...]
-    }
-    '''
 
+def check_powercfg():
     # get the output of 'powercfg /requests'
     output = subprocess.check_output(['powercfg', '/requests']).decode()
-
-    data = {}
-
-    # split the output into lines
-    for line in output.splitlines():
-        # sections
-        if match := re.match(r'^(\w+)\:$', line):
-            key = match.group(1)
-            data[key] = []
-            line_count = 0
-            sub_array = []
-
-        # values
-        elif line and line != 'None.':
-            if line_count == 0:
-                data[key].append(sub_array)
-            elif line_count < 2:
-                sub_array.append(line)
-                line_count += 1
-            else:
-                sub_array = []
-                data[key].append(sub_array)
-                sub_array.append(line)
-                line_count = 1
-
-    return data
+    return not any(string in output for string in KEEP_AWAKE_STRINGS)
 
 
 def main():
@@ -77,22 +38,7 @@ def main():
     last_mouse_pos = win32api.GetCursorPos()
 
     while True:
-        sleepy = True
-        data = parse_powercfg()
-
-        for key, value in data.items():
-            # any of the keys ACTIVELOCKSCREEN, EXECUTION, PERFBOOST, AWAYMODE, DISPLAY, SYSTEM is active
-            if key != 'SYSTEM' and len(value) > 0:
-                sleepy = False
-
-            # SYSTEM section has only one of the values below
-            if key == 'SYSTEM':
-                for sub_value in value:
-                    if sub_value == []:
-                        continue
-                    # check if none of the strings in ignore_strings are in the joined_value
-                    elif not any(x in ''.join(sub_value) for x in IGNORE_STRINGS):
-                        sleepy = False
+        sleepy = check_powercfg()
 
         # if mouse has moved, don't sleep
         cursor_pos = win32api.GetCursorPos()
