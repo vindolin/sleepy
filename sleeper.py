@@ -7,8 +7,8 @@ import time
 
 from pynput import keyboard
 
-SLEEP_DELAY_SEC = 5
 SLEEP_AFTER_MINUTES = 10
+SLEEP_DELAY_SEC = 5
 
 
 def parse_powercfg():
