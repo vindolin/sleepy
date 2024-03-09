@@ -15,12 +15,13 @@ The time to sleep is configurable through the SLEEP_AFTER_MINUTES constant.
 ### Installation
 This script needs the tool [psshutdown.exe](https://learn.microsoft.com/en-us/sysinternals/downloads/psshutdown) from the Windows Sysinternals suite to put the computer into standby.
 
-The only python dependency is pynput (for checking keyboard/mouse activity)
+The only python dependency is pynput (for checking keyboard/mouse activity).
+
 > pip install pynput
 
 This script needs to be run in administrator mode.
 
-You can test it with:
+You can test it in an administrator terminal with:
 
 > "{path to your python installation}\python.exe" "{path to sleepy.py}"
 
