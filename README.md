@@ -8,6 +8,6 @@ It checks the output powercfg /requests for processes that should prevent the co
 
 It also checks mouse and keyboard events to see if the user is using the computer.
 
-If these checks all pass, it will put the computer to sleep.
+If none of this is detected the computer is put into standby using `psshutdown.exe -d`.
 
 The time to sleep is configurable through the SLEEP_AFTER_MINUTES constant.

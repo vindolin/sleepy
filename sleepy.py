@@ -13,6 +13,7 @@ IGNORE_STRINGS = [  # ignore these strings in SYSTEM section
     'An audio stream is currently in use',
     'Legacy Kernel Caller'
 ]
+DO_HIBERNATE = False
 
 DEBUG = True  # print status icons while running
 
@@ -117,7 +118,9 @@ def main():
 
         # this much seconds without waking entries
         if counter == SLEEP_AFTER_MINUTES * 60 / SLEEP_DELAY_SEC:
-            subprocess.run(r'psshutdown.exe -d', shell=True)
+            # hibernate or shutdown
+            flag = 'h' if DO_HIBERNATE else 'd'
+            subprocess.run(f'psshutdown.exe -${flag}', shell=True)
             counter = 0
 
         time.sleep(SLEEP_DELAY_SEC)
