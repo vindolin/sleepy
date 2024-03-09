@@ -48,6 +48,9 @@ def parse_powercfg():
     return data
 
 
+ignore_strings = ['An audio stream is currently in use', 'Legacy Kernel Caller']
+
+
 def main():
     globals()['key_pressed'] = False
 
@@ -71,12 +74,14 @@ def main():
             if key != 'SYSTEM' and len(value) > 0:
                 sleepy = False
 
-            # SYSTEM has only one value of the ones below
+            # SYSTEM section has only one of the values below
             if key == 'SYSTEM':
                 for sub_value in value:
-                    for value_part in sub_value:
-                        if 'An audio stream is currently in use' not in value_part and 'Legacy Kernel Caller' not in value_part:
-                            sleepy = False
+                    # check if none of the strings in ignore_strings are in the joined_value
+                    if not any(x in ''.join(sub_value) for x in ignore_strings):
+                        sleepy = False
+                    else:
+                        sleepy = True
 
         # if mouse has moved, don't sleep
         cursor_pos = win32api.GetCursorPos()
