@@ -7,22 +7,28 @@ import time
 
 from pynput import keyboard
 
-SLEEP_AFTER_MINUTES = 15
-SLEEP_DELAY_SEC = 5
+SLEEP_AFTER_MINUTES = 15  # amount of minutes of inactivity before triggering shutdown
+SLEEP_DELAY_SEC = 5  # check interval
+IGNORE_STRINGS = [  # ignore these strings in SYSTEM section
+    'An audio stream is currently in use',
+    'Legacy Kernel Caller'
+]
 
-
-DEBUG = True
+DEBUG = True  # print status icons while running
 
 
 def parse_powercfg():
     # parses the output of 'powercfg /requests' and returns a dictionary of the following format:
     '''
-    {'ACTIVELOCKSCREEN': [],
-    'AWAYMODE': [],
-    'DISPLAY': [],
-    'EXECUTION': [],
-    'PERFBOOST': [],
-    'SYSTEM': [['[DRIVER] Legacy Kernel Caller']]}
+    {
+        'ACTIVELOCKSCREEN': [],
+        'AWAYMODE': [],
+        'DISPLAY': [],
+        'EXECUTION': [],
+        'PERFBOOST': [],
+        'SYSTEM': [
+            ['[DRIVER] Legacy Kernel Caller'], ...]
+    }
     '''
 
     # get the output of 'powercfg /requests'
@@ -55,9 +61,6 @@ def parse_powercfg():
     return data
 
 
-ignore_strings = ['An audio stream is currently in use', 'Legacy Kernel Caller']
-
-
 def main():
     globals()['key_pressed'] = False
 
@@ -87,7 +90,7 @@ def main():
                     if sub_value == []:
                         continue
                     # check if none of the strings in ignore_strings are in the joined_value
-                    elif not any(x in ''.join(sub_value) for x in ignore_strings):
+                    elif not any(x in ''.join(sub_value) for x in IGNORE_STRINGS):
                         sleepy = False
 
         # if mouse has moved, don't sleep
