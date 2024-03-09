@@ -7,8 +7,11 @@ import time
 
 from pynput import keyboard
 
-SLEEP_AFTER_MINUTES = 10
+SLEEP_AFTER_MINUTES = 15
 SLEEP_DELAY_SEC = 5
+
+
+DEBUG = True
 
 
 def parse_powercfg():
@@ -27,16 +30,20 @@ def parse_powercfg():
 
     data = {}
 
+    # split the output into lines
     for line in output.splitlines():
+        # sections
         if match := re.match(r'^(\w+)\:$', line):
             key = match.group(1)
             data[key] = []
             line_count = 0
             sub_array = []
+
+        # values
         elif line and line != 'None.':
             if line_count == 0:
                 data[key].append(sub_array)
-            if line_count < 2:
+            elif line_count < 2:
                 sub_array.append(line)
                 line_count += 1
             else:
@@ -77,11 +84,11 @@ def main():
             # SYSTEM section has only one of the values below
             if key == 'SYSTEM':
                 for sub_value in value:
+                    if sub_value == []:
+                        continue
                     # check if none of the strings in ignore_strings are in the joined_value
-                    if not any(x in ''.join(sub_value) for x in ignore_strings):
+                    elif not any(x in ''.join(sub_value) for x in ignore_strings):
                         sleepy = False
-                    else:
-                        sleepy = True
 
         # if mouse has moved, don't sleep
         cursor_pos = win32api.GetCursorPos()
@@ -96,18 +103,18 @@ def main():
 
         if not sleepy:  # reset counter
             counter = 0
-            print('⚙️', end='')
+            DEBUG and print('⚙️', end='')
 
         else:  # increment counter
             if counter > 0:
-                print('💤', end='')
+                DEBUG and print('💤', end='')
             counter += 1
 
         sys.stdout.flush()
 
         # this much seconds without waking entries
         if counter == SLEEP_AFTER_MINUTES * 60 / SLEEP_DELAY_SEC:
-            subprocess.run(r'rundll32.exe powrprof.dll, SetSuspendState Sleep', shell=True)
+            subprocess.run(r'psshutdown.exe -d', shell=True)
             counter = 0
 
         time.sleep(SLEEP_DELAY_SEC)
