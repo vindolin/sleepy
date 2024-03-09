@@ -1,6 +1,6 @@
 # - WORK IN PROGRESS -
 
-## Windows Daemon process that checks if it's safe to put windows into sleep.
+## Windows Daemon process that checks if it's safe to put Windows into sleep.
 
 Do an internet search for "windows won't go to sleep" and you know why I made this.
 
