@@ -17,20 +17,28 @@ This script needs the tool [psshutdown.exe](https://learn.microsoft.com/en-us/sy
 
 The only python dependency is pynput (for checking keyboard/mouse activity).
 
-> pip install pynput
+```
+pip install pynput
+```
 
 This script needs to be run in administrator mode.
 
 You can test it in an administrator terminal with:
 
-> "{path to your python installation}\python.exe" "{path to sleepy.py}"
+```
+"{path to your python installation}\python.exe" "{path to sleepy.py}"
+```
 
 To run the script on login, create a link in:
 
->%appdata%\Microsoft\Windows\Start Menu\Programs\Startup
+```
+%appdata%\Microsoft\Windows\Start Menu\Programs\Startup
+```
 
 Set the Target to:
 
-> "{path to your python installation}\pythonw.exe" "{path to sleepy.py}"
+```
+"{path to your python installation}\pythonw.exe" "{path to sleepy.py}"
+```
 
 Click Advance and check "Run as administrator"
