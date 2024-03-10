@@ -21,6 +21,7 @@ The only python dependency is pynput (for checking keyboard/mouse activity).
 pip install pynput
 ```
 
+
 This script needs to be run in administrator mode.
 
 You can test it in an administrator terminal with:
@@ -28,6 +29,8 @@ You can test it in an administrator terminal with:
 ```
 "{path to your python installation}\python.exe" "{path to sleepy.py}"
 ```
+
+<!--
 
 To run the script on login, create a link in:
 
@@ -42,3 +45,4 @@ Set the Target to:
 ```
 
 Click Advance and check "Run as administrator"
+-->
