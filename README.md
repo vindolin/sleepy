@@ -8,7 +8,7 @@ It checks the output of ```powercfg /requests``` for processes that should preve
 
 It also checks mouse and keyboard events to see if the user is using the computer.
 
-If none of this is detected the computer is put into standby using `psshutdown.exe -d`.
+If none of this is detected, the computer is put into standby using `psshutdown.exe -d`.
 
 The time to sleep is configurable through the SLEEP_AFTER_MINUTES constant.
 
