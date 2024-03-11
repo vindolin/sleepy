@@ -2,7 +2,7 @@
 
 ## Windows daemon process that checks if the computer has not been used for n minutes and then puts it into standby mode.
 
-Do an internet search for "windows won't go to sleep" and you know why I made this.
+Do an internet search for "windows won't go to sleep" and you know why I made this 😠.
 
 It checks the output of ```powercfg /requests``` for processes that should prevent the computer from going to sleep.
 
