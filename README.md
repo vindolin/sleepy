@@ -28,7 +28,7 @@ This script needs to be run in administrator mode because ```powercfg /requests`
 
 - Open Task scheduler
 - Click on "Create Task"
-- Name it sleepy
+- Name it "Sleepy"
 - Check "Run with highest privileges"
 - Check "hidden"
 
