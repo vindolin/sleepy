@@ -1,8 +1,8 @@
-
 import subprocess
-import win32api
 import sys
 import time
+
+import win32api
 
 from pynput import keyboard
 
@@ -79,4 +79,5 @@ def main():
         time.sleep(CHECK_LOOP_INTERVAL)
 
 
-main()
+if __name__ == '__main__':
+    main()
