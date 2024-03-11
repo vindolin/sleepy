@@ -1,0 +1,3 @@
+import sleepy
+
+sleepy.main()

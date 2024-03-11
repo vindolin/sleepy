@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import tempfile
 import time
 
 import win32api
@@ -9,7 +10,7 @@ from pynput import keyboard
 SLEEP_AFTER_MINUTES = 15  # amount of minutes of inactivity before triggering shutdown
 CHECK_LOOP_INTERVAL = 60  # check interval seconds
 DO_HIBERNATE = False
-DEBUG = True  # print status icons while running
+DEBUG = False  # print status icons while running
 
 # this script checks the output of 'powercfg /requests' and looks for the following strings:
 KEEP_AWAKE_STRINGS = [
@@ -20,11 +21,18 @@ KEEP_AWAKE_STRINGS = [
 
 def check_powercfg():
     # get the output of 'powercfg /requests'
-    output = subprocess.check_output(['powercfg', '/requests']).decode()
+    process = subprocess.Popen(['powercfg', '/requests'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
+    output, _ = process.communicate()
+    output = output.decode()
     return not any(string in output for string in KEEP_AWAKE_STRINGS)
 
 
 last_debug_time = time.time()
+
+
+def write_log(text):
+    with open(f'{tempfile.gettempdir()}\\sleepy.log', 'ab') as f:
+        f.write(f'{time.time()}: {text}\n'.encode())
 
 
 def print_char(char):
@@ -32,6 +40,8 @@ def print_char(char):
 
 
 def main():
+    write_log('Starting sleepy')
+
     globals()['key_pressed'] = False
 
     def on_press(key):
@@ -68,10 +78,11 @@ def main():
                 DEBUG and print_char('💤')
             counter += 1
 
-        try:
-            sys.stdout.flush()
-        except AttributeError:
-            pass  # there's no stdout when started with pythonw
+        if DEBUG:
+            try:
+                sys.stdout.flush()
+            except AttributeError:
+                pass  # there's no stdout when started with pythonw
 
         # this much seconds without waking entries
         if counter == SLEEP_AFTER_MINUTES * 60 / CHECK_LOOP_INTERVAL:
@@ -87,6 +98,5 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        with open(r'c:\temp\sleepy.log', 'a') as f:
-            f.write(f'Error occured at {time.strftime("%c")}: {e}')
+        write_log(f'Error occured at {time.strftime("%c")}: {e}'.encode())
         raise
