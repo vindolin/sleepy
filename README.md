@@ -36,7 +36,7 @@ You can test it in an administrator terminal with:
 Things I tried that didn't work:
 - creating a link in %appdata%\Roaming\Microsoft\Windows\Start Menu\Programs\Startup, setting the "run as administrator" checkbox to true. (no process turned up in Task Manager)
 - creating a Task Scheduler task that runs on logon with highest privileges. (no process turned up in Task Manager)
-- turning the script into a Windows service (testing the service with "python service.py debug works but trying to start it results in the error: ```Starting service Error starting service: The service did not respond to the start or control request in a timely fashion```)
+- turning the script into a Windows service (testing the service with "python service.py debug works but trying to start it results in the error: ```Error starting service: The service did not respond to the start or control request in a timely fashion```)
 
 > [!TIP]
 > Maybe the new sudo.exe feature in the next Windows release will help...
