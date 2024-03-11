@@ -89,6 +89,7 @@ def main():
             # hibernate or shutdown
             flag = 'h' if DO_HIBERNATE else 'd'
             subprocess.run(f'psshutdown.exe -{flag}', shell=True)
+            write_log(f'Shutdown triggered at {time.strftime("%c")}')
             counter = 0
 
         time.sleep(CHECK_LOOP_INTERVAL)
@@ -98,5 +99,5 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        write_log(f'Error occured at {time.strftime("%c")}: {e}'.encode())
+        write_log(f'Error occured at {time.strftime("%c")}: {e}')
         raise
