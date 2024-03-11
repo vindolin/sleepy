@@ -21,41 +21,25 @@ The only python dependency is pynput (for checking keyboard/mouse activity).
 pip install pynput
 ```
 
+> [!IMPORTANT]
+This script needs to be run in administrator mode because ```powercfg /requests``` doesn't work as normal user.
 
-This script needs to be run in administrator mode.
+#### It can be automatically started using the Windows Task Scheduler
 
-You can test it in an administrator terminal with:
+- Open Task scheduler
+- Click on "Create Task"
+- Name it sleepy
+- Check "Run with highest privileges"
+- Check "hidden"
 
-```
-"{path to your python installation}\python.exe" "{path to sleepy.py}"
+#### Triggers
+- In the Triggers tab click on "New..."
+- In the "Begin the task" dropdown choose "On connection to user session"
+- Select "Connection from local computer"
+- Uncheck "Stop task if it runs longer than"
 
-```
-> [!CAUTION]
-> I couldn't figure out how to load this script on logon in administrator mode.
-
-Things I tried that didn't work:
-- creating a link in %appdata%\Roaming\Microsoft\Windows\Start Menu\Programs\Startup, setting the "run as administrator" checkbox to true. (no process turned up in Task Manager)
-- creating a Task Scheduler task that runs on logon with highest privileges. (no process turned up in Task Manager)
-- turning the script into a Windows service (testing the service with "python service.py debug works but trying to start it results in the error: ```Error starting service: The service did not respond to the start or control request in a timely fashion```)
-
-> [!TIP]
-> Maybe the new sudo.exe feature in the next Windows release will help...
->
-> Suggestions welcome!
-
-<!--
-
-To run the script on login, create a link in:
-
-```
-%appdata%\Microsoft\Windows\Start Menu\Programs\Startup
-```
-
-Set the Target to:
-
-```
-"{path to your python installation}\pythonw.exe" "{path to sleepy.py}"
-```
-
-Click Advance and check "Run as administrator"
--->
+#### Actions
+- In the Actions tab click on "New..."
+- In the "Start a program" dropdown choose "Start a program"
+- In the "Program/script" field enter the path to your "pythonw.exe"
+- In the "Add arguments (optional)" field enter the path to your "sleepy.py"

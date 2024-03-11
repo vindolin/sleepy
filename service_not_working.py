@@ -29,8 +29,8 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         threading.Thread(target=self.main).start()
 
     def main(self):
-        # Your business logic or call to any class should be here
-        # this time it creates a text.txt and writes Test Service in a daily manner
+        # testing the service with "python service.py debug" works
+        # but starting it results in the error: "Error starting service: The service did not respond to the start or control request in a timely fashion"
         sleepy.main()
 
 

@@ -67,7 +67,10 @@ def main():
                 DEBUG and print_char('💤')
             counter += 1
 
-        sys.stdout.flush()
+        try:
+            sys.stdout.flush()
+        except AttributeError:
+            pass  # there's no stdout when started with pythonw
 
         # this much seconds without waking entries
         if counter == SLEEP_AFTER_MINUTES * 60 / CHECK_LOOP_INTERVAL:
@@ -80,4 +83,9 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        with open(r'c:\temp\sleepy.log', 'a') as f:
+            f.write(f'Error occured at {time.strftime("%c")}: {e}')
+        raise
