@@ -13,7 +13,12 @@ If none of this is detected, the computer is put into standby using `psshutdown.
 The time to sleep is configurable through the SLEEP_AFTER_MINUTES constant.
 
 ### Installation
+
+Clone or unzip this repository into a local directory.
+
+> [!IMPORTANT]
 This script needs the tool [psshutdown.exe](https://learn.microsoft.com/en-us/sysinternals/downloads/psshutdown) from the Windows Sysinternals suite to put the computer into standby.
+
 
 The only python dependency is pynput (for checking keyboard/mouse activity).
 
