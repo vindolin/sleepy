@@ -11,6 +11,7 @@ CHECK_LOOP_INTERVAL = 60  # check interval seconds
 DO_HIBERNATE = False
 DEBUG = True  # print status icons while running
 
+# this script checks the output of 'powercfg /requests' and looks for the following strings:
 KEEP_AWAKE_STRINGS = [
     'display request',
     'non-display request'
