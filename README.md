@@ -4,7 +4,7 @@
 
 Do an internet search for "windows won't go to sleep" and you know why I made this.
 
-It checks the output powercfg /requests for processes that should prevent the computer from going to sleep.
+It checks the output of ```powercfg /requests``` for processes that should prevent the computer from going to sleep.
 
 It also checks mouse and keyboard events to see if the user is using the computer.
 
