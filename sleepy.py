@@ -3,14 +3,12 @@ import sys
 import tempfile
 import time
 
-import win32api
-
-from pynput import keyboard
+from pynput import keyboard, mouse
 
 SLEEP_AFTER_MINUTES = 15  # amount of minutes of inactivity before triggering shutdown
 CHECK_LOOP_INTERVAL = 60  # check interval seconds
 DO_HIBERNATE = False
-DEBUG = False  # print status icons while running
+DEBUG = True  # print status icons while running
 
 # this script checks the output of 'powercfg /requests' and looks for the following strings:
 KEEP_AWAKE_STRINGS = [
@@ -30,9 +28,13 @@ def check_powercfg():
 last_debug_time = time.time()
 
 
-def write_log(text):
+def write_log(text, timestamp=True):
+    if timestamp:
+        text = f'{time.strftime("%Y-%m-%d %H:%M:%S")} {text}\n'
+    else:
+        text = f'{text}\n'
     with open(f'{tempfile.gettempdir()}\\sleepy.log', 'ab') as f:
-        f.write(f'{time.time()}: {text}\n'.encode())
+        f.write(text.encode())
 
 
 def print_char(char):
@@ -40,34 +42,35 @@ def print_char(char):
 
 
 def main():
+    key_pressed = False
+    mouse_moved = False
+
     write_log('Starting sleepy')
 
-    globals()['key_pressed'] = False
+    def on_key_press(key):
+        nonlocal key_pressed
+        key_pressed = True
 
-    def on_press(key):
-        globals()['key_pressed'] = True
+    def on_mouse_move(x, y):
+        nonlocal mouse_moved
+        mouse_moved = True
 
-    # Start the keyboard listener.
-    listener = keyboard.Listener(on_press=on_press)
-    listener.start()
+    # start keyboard/mouse listeners
+    kb_listener = keyboard.Listener(on_press=on_key_press)
+    kb_listener.start()
+    mouse_listener = mouse.Listener(on_move=on_mouse_move)
+    mouse_listener.start()
 
     counter = 0
-
-    last_mouse_pos = win32api.GetCursorPos()
 
     while True:
         sleepy = check_powercfg()
 
-        # if mouse has moved, don't sleep
-        cursor_pos = win32api.GetCursorPos()
-        if last_mouse_pos != cursor_pos:
+        if mouse_moved or key_pressed:
             sleepy = False
-            last_mouse_pos = cursor_pos
 
-        # detect keyboard presses
-        if globals()['key_pressed']:
-            sleepy = False
-            globals()['key_pressed'] = False
+        key_pressed = False
+        mouse_moved = False
 
         if not sleepy:  # reset counter
             counter = 0
@@ -82,14 +85,14 @@ def main():
             try:
                 sys.stdout.flush()
             except AttributeError:
-                pass  # there's no stdout when started with pythonw
+                pass  # there's no stdout when started with pythonw?
 
         # this much seconds without waking entries
         if counter == SLEEP_AFTER_MINUTES * 60 / CHECK_LOOP_INTERVAL:
             # hibernate or shutdown
             flag = 'h' if DO_HIBERNATE else 'd'
             subprocess.run(f'psshutdown.exe -{flag}', shell=True)
-            write_log(f'Shutdown triggered at {time.strftime("%c")}')
+            write_log('Shutdown triggered')
             counter = 0
 
         time.sleep(CHECK_LOOP_INTERVAL)
@@ -99,5 +102,5 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        write_log(f'Error occured at {time.strftime("%c")}: {e}')
+        write_log(f'Error occured: {e}')
         raise
