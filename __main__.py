@@ -91,7 +91,7 @@ def main():
         if counter == SLEEP_AFTER_MINUTES * 60 / CHECK_LOOP_INTERVAL:
             # hibernate or shutdown
             flag = 'h' if DO_HIBERNATE else 'd'
-            subprocess.run(f'psshutdown.exe -{flag}', shell=True)
+            subprocess.run(f'psshutdown.exe -{flag} -t 0', shell=True)
             write_log('Shutdown triggered')
             counter = 0
 
